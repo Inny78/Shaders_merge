@@ -679,16 +679,16 @@ PixelShader =
 			#ifndef IS_RING
 				#ifndef NO_PLANET_EMISSIVE
 					#ifndef PLANET_LIGHTS_EMISSIVE
-					#ifdef IS_PLANET
-						// Emissive only on dark side of planets
-						float3 vSystemLightDir = normalize( systemPointlight._Position - lightingProperties._WorldSpacePos );
-						float NdotL = saturate( saturate( dot( vInNormal, -vSystemLightDir ) - 0.05f ) * 5.0f );
+						#ifdef IS_PLANET
+							// Emissive only on dark side of planets
+							float3 vSystemLightDir = normalize( systemPointlight._Position - lightingProperties._WorldSpacePos );
+							float NdotL = saturate( saturate( dot( vInNormal, -vSystemLightDir ) - 0.05f ) * 5.0f );
 
-						float vDarksideEmissive = 1.0f - saturate( length( diffuseLight + specularLight ) );
-						vEmissive *= vDarksideEmissive * vProperties.r * NdotL;
+							float vDarksideEmissive = 1.0f - saturate( length( diffuseLight + specularLight ) );
+							vEmissive *= vDarksideEmissive * vProperties.r * NdotL;
 
-						vCubemapIntensity *= ( 1.0f - vDarksideEmissive ) / 2.0f;
-					#endif
+							vCubemapIntensity *= ( 1.0f - vDarksideEmissive ) / 2.0f;
+						#endif
 					#else // PLANET_LIGHTS_EMISSIVE
 						float vDarksideEmissive = 1.0f;
 					#endif
@@ -1032,12 +1032,12 @@ PixelShader =
 							animationDir = vUVAnimationDir;
 						#endif
 						vUV += animationDir * vUVAnimationTime;
-					vDiffuse = tex2D( DiffuseMap, vUV );
+						vDiffuse = tex2D( DiffuseMap, vUV );
 					#endif
 				#endif
 
 				#ifndef ANIMATE_UV_ALPHA
-					vDiffuse.a = tex2D( DiffuseMap, In.vUV0 ).a;
+						vDiffuse.a = tex2D( DiffuseMap, In.vUV0 ).a;
 				#endif
 
 				#ifdef USE_NORMALMAP_AS_ALPHA
@@ -1171,7 +1171,7 @@ PixelShader =
 								float scalar = foregroundAlpha + ( 1.f - foregroundAlpha ) * foregroundAlpha / summarisedAlpha;
 								blendedColor = lerp( vCharacterColor.rgb, vDecalColor.rgb, scalar );
 							}
-					else
+							else
 							{
 								blendedColor = vCharacterColor.rgb;
 							}
@@ -2405,14 +2405,14 @@ Effect PdxMeshTerra
 {
 	VertexShader = "VertexPdxMeshStandard"
 	PixelShader = "PixelPdxMeshStandard"
-	Defines = { "ADD_COLOR" "EMISSIVE"  }
+	Defines = { "ADD_COLOR" "EMISSIVE" }
 }
 
 Effect PdxMeshTerraSkinned
 {
 	VertexShader = "VertexPdxMeshStandardSkinned"
 	PixelShader = "PixelPdxMeshStandard"
-	Defines = { "ADD_COLOR" "EMISSIVE" }
+	Defines = { "EMISSIVE" }
 }
 
 Effect PdxMeshTerraEmissiveMask
@@ -2730,43 +2730,73 @@ Effect PdxMeshClouds
 	Defines = { "IS_PLANET" "IS_CLOUDS"  }
 }
 
-Effect PdxMeshCloudsAnimateUV
+Effect PdxMeshRingworldClouds
 {
 	VertexShader = "VertexPdxMeshStandard"
-	PixelShader = "PixelPdxMeshShip"
-	BlendState = "BlendStateAlphaBlend";
-	Defines = {
-		"IS_PLANET"
-		"IS_CLOUDS"
-		"ANIMATE_UV"
-		"NO_ALPHA_MULTIPLIED_EMISSIVE"
-	}
+	PixelShader = "PixelPdxMeshStandard"
+	BlendState = "BlendStateAlphaBlend"
+	Defines = { "IS_CLOUDS" }
 }
 
-# // Effect PdxMeshCloudsSkinned
-# // {
-# //	VertexShader = "VertexPdxMeshStandardSkinned"
-# //	PixelShader = "PixelPdxMeshStandard"
-# //	BlendState = "BlendStateAlphaBlend";
-# //	Defines = { "IS_PLANET" "IS_CLOUDS"  }
-# // }
+Effect PdxMeshCloudsSkinned
+{
+	VertexShader = "VertexPdxMeshStandardSkinned"
+	PixelShader = "PixelPdxMeshStandard"
+	BlendState = "BlendStateAlphaBlend";
+	Defines = { "IS_PLANET" "IS_CLOUDS"  }
+}
+
+Effect PdxMeshRingworldCloudsSkinned
+{
+	VertexShader = "VertexPdxMeshStandardSkinned"
+	PixelShader = "PixelPdxMeshStandard"
+	BlendState = "BlendStateAlphaBlend";
+	Defines = { "IS_CLOUDS"  }
+}
 
 Effect PdxMeshCloudsConstruction
 {
 	VertexShader = "VertexPdxMeshStandard"
 	PixelShader = "PixelPdxMeshInvisible"
 }
+
+Effect PdxMeshRingworldCloudsConstruction
+{
+	VertexShader = "VertexPdxMeshStandard"
+	PixelShader = "PixelPdxMeshInvisible"
+}
+
 Effect PdxMeshCloudsConstructionSkinned
 {
 	VertexShader = "VertexPdxMeshStandardSkinned"
 	PixelShader = "PixelPdxMeshInvisible"
 }
+
+Effect PdxMeshRingworldCloudsConstructionSkinned
+{
+	VertexShader = "VertexPdxMeshStandardSkinned"
+	PixelShader = "PixelPdxMeshInvisible"
+}
+
 Effect PdxMeshCloudsConstructionAlphaBlend
 {
 	VertexShader = "VertexPdxMeshStandard"
 	PixelShader = "PixelPdxMeshInvisible"
 }
+
+Effect PdxMeshRingworldCloudsConstructionAlphaBlend
+{
+	VertexShader = "VertexPdxMeshStandard"
+	PixelShader = "PixelPdxMeshInvisible"
+}
+
 Effect PdxMeshCloudsConstructionAlphaBlendSkinned
+{
+	VertexShader = "VertexPdxMeshStandardSkinned"
+	PixelShader = "PixelPdxMeshInvisible"
+}
+
+Effect PdxMeshRingworldCloudsConstructionAlphaBlendSkinned
 {
 	VertexShader = "VertexPdxMeshStandardSkinned"
 	PixelShader = "PixelPdxMeshInvisible"
@@ -3212,11 +3242,25 @@ Effect PdxMeshCloudsShadow
 	Defines = { "IS_SHADOW" "IS_PLANET" "IS_CLOUDS" }
 }
 
+Effect PdxMeshRingworldCloudsShadow
+{
+	VertexShader = "VertexPdxMeshStandardShadow"
+	PixelShader = "PixelPdxMeshStandardShadow"
+	Defines = { "IS_SHADOW" "IS_CLOUDS" }
+}
+
 Effect PdxMeshCloudsSkinnedShadow
 {
 	VertexShader = "VertexPdxMeshStandardShadow"
 	PixelShader = "PixelPdxMeshStandardShadow"
 	Defines = { "IS_SHADOW" "IS_PLANET" "IS_CLOUDS" }
+}
+
+Effect PdxMeshRingworldCloudsSkinnedShadow
+{
+	VertexShader = "VertexPdxMeshStandardShadow"
+	PixelShader = "PixelPdxMeshStandardShadow"
+	Defines = { "IS_SHADOW" "IS_CLOUDS" }
 }
 
 Effect PdxMeshRingsShadow
@@ -4011,7 +4055,7 @@ Effect PdxMeshTerraConstruction
 {
 	VertexShader = "VertexPdxMeshStandard"
 	PixelShader = "PixelConstructionOpaque"
-	
+
 	#RasterizerState = "RasterizerStateNoCulling"
 }
 Effect PdxMeshTerraConstructionAlphaBlend
@@ -4205,28 +4249,6 @@ Effect AlphaBlendNoDepthSkinnedShadow
 
 # // #########################################################################################################################################
 
-# // Corsairmarks' Ringworld Enhancements
-
-# // #########################################################################################################################################
-
-Effect PdxMeshCloudsAnimateUVShadow
-{
-	VertexShader = "VertexPdxMeshStandard"
-	PixelShader = "PixelPdxMeshShip"
-	BlendState = "BlendStateAlphaBlend";
-	Defines = { "IS_PLANET" "IS_CLOUDS" "IS_SHADOW" "ANIMATE_UV" "NO_ALPHA_MULTIPLIED_EMISSIVE"	}
-}
-
-Effect PdxMeshCloudsSkinned
-{
-	VertexShader = "VertexPdxMeshStandardSkinned"
-	PixelShader = "PixelPdxMeshStandard"
-	BlendState = "BlendStateAlphaBlend";
-	Defines = { "IS_PLANET" "IS_CLOUDS"  }
-}
-
-# // #########################################################################################################################################
-
 # // AOT Shader Effect Definitions here
 
 # // #########################################################################################################################################
@@ -4360,6 +4382,9 @@ Effect AotPlanetShieldPESkinnedShadow
 }
 
 # // #########################################################################################################################################
+
+# // Gigas start here
+
 # // #########################################################################################################################################
 
 # // Either old or added but unknown
@@ -4400,17 +4425,7 @@ Effect PdxMeshTerraAnimateUVSkinnedShadow
 	Defines = { "IS_SHADOW" }
 }
 
-
-
 # // #########################################################################################################################################
-# // #########################################################################################################################################
-# // #########################################################################################################################################
-# // #########################################################################################################################################
-# // #########################################################################################################################################
-# // #########################################################################################################################################
-# // #########################################################################################################################################
-# // #########################################################################################################################################
-
 
 
 # // Additions
@@ -4768,12 +4783,6 @@ Effect OmniMeshShipAnimateUVAlphaSkinnedShadow
 	Defines = { "IS_SHADOW" }
 }
 
-
-
-
-
-
-
 Effect PdxMeshPlanetRingsRS
 {
 	VertexShader = "VertexPdxMeshStandard"
@@ -4809,13 +4818,6 @@ RasterizerState RasterizerStateNoCullingRS
 {
 	CullMode = "CULL_NONE"
 }
-
-
-
-
-
-
-
 
 Effect PdxMeshShipHalo
 {
