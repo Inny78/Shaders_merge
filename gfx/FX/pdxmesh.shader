@@ -651,15 +651,15 @@ PixelShader =
 		#endif
 
 			float3 vColor = vDiffuse.rgb;
-		#ifdef ADD_COLOR //Adds empire/atmosphere color to parts of mesh, depending on mask
+		#ifndef ADD_COLOR //Adds empire/atmosphere color to parts of mesh, depending on mask
 			if( AtmosphereColor.a > 0.0f )
 			{
-
+		#endif
 				// Gamma - Linear ping pong
 				// All content is already created for gamma space math, so we do this in gamma space
 				vColor = ToGamma(vColor);
 				vColor = ToLinear(lerp( vColor, vColor * ( vProperties.r * AtmosphereColor.rgb ), vProperties.r ));
-
+		#ifndef ADD_COLOR
 			}
 		#endif
 
